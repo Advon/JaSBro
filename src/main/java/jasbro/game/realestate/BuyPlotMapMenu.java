@@ -13,14 +13,19 @@ import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 
 import jasbro.Jasbro;
+import jasbro.game.GameData;
 import jasbro.game.world.Time;
 import jasbro.gui.objects.div.MyImage;
 import jasbro.gui.pictures.ImageData;
 import jasbro.texts.TextUtil;
 import jasbro.util.ConfigHandler;
 import jasbro.util.Settings;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class BuyPlotMapMenu extends MyImage {
+	private static final Logger LOG = LogManager.getLogger(BuyPlotMapMenu.class);
+
 	int width = ConfigHandler.getResolution(Settings.RESOLUTIONWIDTH);
 	int height = ConfigHandler.getResolution(Settings.RESOLUTIONHEIGHT);
 	int widthRat = (int) (width/1280);
@@ -32,15 +37,20 @@ public class BuyPlotMapMenu extends MyImage {
 	int arrowBtnHeight = (int) (50*width/1280);
 	private ImageIcon plotIcon1 = new ImageIcon("images/buttons/landmarker.png");
 	private ImageIcon plotIcon2 = new ImageIcon("images/buttons/landmarker hover.png");
+	private ImageIcon plotIcon3 = new ImageIcon("images/buttons/landmarker_sold.png");
+	private ImageIcon plotIcon4 = new ImageIcon("images/buttons/landmarker_sold hover.png");
 	private ImageIcon leftIcon1 = new ImageIcon("images/buttons/arrowleft.png");
 	private ImageIcon leftIcon2 = new ImageIcon("images/buttons/arrowleft hover.png");
 	private ImageIcon rightIcon1 = new ImageIcon("images/buttons/arrowright.png");
 	private ImageIcon rightIcon2 = new ImageIcon("images/buttons/arrowright hover.png");
+
+	private final int mapSize = 4;
+	private int mapID;
 	
 	/**
 	 * Create the panel.
 	 */
-	public BuyPlotMapMenu(String map) {
+	public BuyPlotMapMenu(int mapID) {
 		removeAll();
 		
 		addMouseListener (new MouseAdapter(){
@@ -75,14 +85,18 @@ public class BuyPlotMapMenu extends MyImage {
 				Jasbro.getInstance().getGui().showRealEstate();
 			}
 		});
-		
-		plotIcon1 = new ImageIcon("images/buttons/landmarker.png");
+
 		Image plotImage1 = plotIcon1.getImage().getScaledInstance( iconSize, iconSize,  java.awt.Image.SCALE_SMOOTH );
 		plotIcon1 = new ImageIcon(plotImage1);
-		
-		plotIcon2 = new ImageIcon("images/buttons/landmarker hover.png");
+
 		Image plotImage2 = plotIcon2.getImage().getScaledInstance( iconSize, iconSize,  java.awt.Image.SCALE_SMOOTH );
 		plotIcon2 = new ImageIcon(plotImage2);
+
+		Image plotImage3 = plotIcon3.getImage().getScaledInstance( iconSize, iconSize,  java.awt.Image.SCALE_SMOOTH );
+		plotIcon3 = new ImageIcon(plotImage3);
+
+		Image plotImage4 = plotIcon4.getImage().getScaledInstance( iconSize, iconSize,  java.awt.Image.SCALE_SMOOTH );
+		plotIcon4 = new ImageIcon(plotImage4);
 		
 		Image leftImage1 = leftIcon1.getImage().getScaledInstance( backHomeBtnHeight, backHomeBtnWidth,  java.awt.Image.SCALE_SMOOTH ) ;  
 		leftIcon1 = new ImageIcon(leftImage1);
@@ -95,556 +109,51 @@ public class BuyPlotMapMenu extends MyImage {
 				
 		Image rightImage2 = rightIcon2.getImage().getScaledInstance( backHomeBtnHeight, backHomeBtnWidth,  java.awt.Image.SCALE_SMOOTH ) ;  
 		rightIcon2 = new ImageIcon(rightImage2);
-		
-		switch(map) {
-			case "map2":
-				map2();
+
+		this.mapID = mapID;
+		displayMap();
+	}
+
+	public void displayMap() {
+		setBackgroundImage(getTownImage(getMap()));
+		setBackground(Color.WHITE);
+		setLayout(null);
+		setVisible(true);
+
+		int[] xPos = new int[0];
+		int[] yPos = new int[0];
+
+		switch (mapID) {
+			case 1:
+				xPos = new int[]{580, 50, 425, 190};
+				yPos = new int[]{320, 80, 280, 320};
 				break;
-			case "map3":
-				map3();
+			case 2:
+				xPos = new int[]{860, 475, 595, 800, 1150};
+				yPos = new int[]{505, 15, 220, 320, 460};
 				break;
-			case "map4":
-				map4();
+			case 3:
+				xPos = new int[]{600, 630, 970, 100};
+				yPos = new int[]{520, 35, 125, 320};
+				break;
+			case 4:
+				xPos = new int[]{550, 150, 670, 685, 190};
+				yPos = new int[]{585, 385, 75, 323, 170};
 				break;
 			default:
-				map1();
+				LOG.warn("Trying to display a non-existent map '{}'", mapID);
 				break;
-		}	
-	}
-	
-	public void map1() {		
-		setBackgroundImage(getTownImage("map1"));
-		setBackground(Color.WHITE);
-		setLayout(null);
-		setVisible(true);
-
-
-
-		if (Jasbro.getInstance().getData().getTime() != Time.NIGHT) {
-			
-			JButton plot1Button = new JButton(plotIcon1);
-			plot1Button.setRolloverIcon(plotIcon2);
-			plot1Button.setPressedIcon(plotIcon1);
-			plot1Button.setBounds(580*width/1280, 320*height/720, iconSize, iconSize);
-			plot1Button.setBorderPainted(false); 
-			plot1Button.setContentAreaFilled(false); 
-			plot1Button.setFocusPainted(false); 
-			plot1Button.setOpaque(false);
-			plot1Button.setToolTipText("Plot 1");
-
-			add(plot1Button);
-			plot1Button.addActionListener(new ActionListener() {
-				
-				@Override
-				public void actionPerformed(ActionEvent e) {
-					if (JOptionPane.showConfirmDialog (Jasbro.getInstance().getGui(), TextUtil.t("ui.realestate.buyplot"), TextUtil.t("ui.confirmResetPerks.title"), JOptionPane.OK_CANCEL_OPTION) ==
-							JOptionPane.YES_NO_OPTION) {
-						Jasbro.getInstance().getData().spendMoney(100000, "");
-					}
-				}
-			});
-			
-			JButton plot2Button = new JButton(plotIcon1);
-			plot2Button.setRolloverIcon(plotIcon2);
-			plot2Button.setPressedIcon(plotIcon1);
-			plot2Button.setBounds(50*width/1280, 80*height/720, iconSize, iconSize);
-			plot2Button.setBorderPainted(false); 
-			plot2Button.setContentAreaFilled(false); 
-			plot2Button.setFocusPainted(false); 
-			plot2Button.setOpaque(false);
-			plot2Button.setToolTipText("Plot 2");
-
-			add(plot2Button);
-			plot2Button.addActionListener(new  ActionListener() {
-				
-				@Override
-				public void actionPerformed(ActionEvent e) {
-				//	Jasbro.getInstance().getGui().showSlaveMarketScreen();
-				}
-			});		
-			
-			JButton plot3Button = new JButton(plotIcon1);
-			plot3Button.setRolloverIcon(plotIcon2);
-			plot3Button.setPressedIcon(plotIcon1);
-			plot3Button.setBounds(425*width/1280, 280*height/720, iconSize, iconSize);
-			plot3Button.setBorderPainted(false); 
-			plot3Button.setContentAreaFilled(false); 
-			plot3Button.setFocusPainted(false); 
-			plot3Button.setOpaque(false);
-			plot3Button.setToolTipText("Plot 3");
-
-			add(plot3Button);
-			plot3Button.addActionListener(new  ActionListener() {
-				
-				@Override
-				public void actionPerformed(ActionEvent e) {
-				//	Jasbro.getInstance().getGui().showSlaveMarketScreen();
-				}
-			});		
-			
-			JButton plot4Button = new JButton(plotIcon1);
-			plot4Button.setRolloverIcon(plotIcon2);
-			plot4Button.setPressedIcon(plotIcon1);
-			plot4Button.setBounds(190*width/1280, 320*height/720, iconSize, iconSize);
-			plot4Button.setBorderPainted(false); 
-			plot4Button.setContentAreaFilled(false); 
-			plot4Button.setFocusPainted(false); 
-			plot4Button.setOpaque(false);
-			plot4Button.setToolTipText("Plot 4");
-
-			add(plot4Button);
-			plot4Button.addActionListener(new  ActionListener() {
-				
-				@Override
-				public void actionPerformed(ActionEvent e) {
-				//	Jasbro.getInstance().getGui().showSlaveMarketScreen();
-				}
-			});		
-			
-			JButton leftButton = new JButton(leftIcon1);
-			leftButton.setRolloverIcon(leftIcon2);
-			leftButton.setPressedIcon(leftIcon1);
-			leftButton.setBounds((int) (15*width/1280),(int) (250*height/720), backHomeBtnHeight, backHomeBtnWidth);
-			leftButton.setBorderPainted(false); 
-			leftButton.setContentAreaFilled(false); 
-			leftButton.setFocusPainted(false); 
-			leftButton.setOpaque(false);
-			add(leftButton);
-			
-			leftButton.addActionListener(new  ActionListener() {			
-				@Override
-				public void actionPerformed(ActionEvent e) {
-					Jasbro.getInstance().getGui().showBuyPlotMapScreen("map4");
-				}
-			});
-			
-			JButton rightButton = new JButton(rightIcon1);
-			rightButton.setRolloverIcon(rightIcon2);
-			rightButton.setPressedIcon(rightIcon1);
-			rightButton.setBounds((int) (1210*width/1280),(int) (250*height/720), backHomeBtnHeight, backHomeBtnWidth);
-			rightButton.setBorderPainted(false); 
-			rightButton.setContentAreaFilled(false); 
-			rightButton.setFocusPainted(false); 
-			rightButton.setOpaque(false);
-			add(rightButton);
-			
-			rightButton.addActionListener(new  ActionListener() {			
-				@Override
-				public void actionPerformed(ActionEvent e) {
-					Jasbro.getInstance().getGui().showBuyPlotMapScreen("map2");
-				}
-			});
-
 		}
 
-		validate();
-		repaint();
-	}
-	
-	public void map2() {		
-		setBackgroundImage(getTownImage("map2"));
-		setBackground(Color.WHITE);
-		setLayout(null);
-		setVisible(true);
-
 		if (Jasbro.getInstance().getData().getTime() != Time.NIGHT) {
-			
-			JButton plot1Button = new JButton(plotIcon1);
-			plot1Button.setRolloverIcon(plotIcon2);
-			plot1Button.setPressedIcon(plotIcon1);
-			plot1Button.setBounds(860*width/1280, 505*height/720, iconSize, iconSize);
-			plot1Button.setBorderPainted(false); 
-			plot1Button.setContentAreaFilled(false); 
-			plot1Button.setFocusPainted(false); 
-			plot1Button.setOpaque(false);
-			plot1Button.setToolTipText("Plot 1");
+			JButton plotButton;
 
-			add(plot1Button);
-			plot1Button.addActionListener(new  ActionListener() {
-				
-				@Override
-				public void actionPerformed(ActionEvent e) {
-				//	Jasbro.getInstance().getGui().showSlaveMarketScreen();
-				}
-			});	
-			
-			JButton plot2Button = new JButton(plotIcon1);
-			plot2Button.setRolloverIcon(plotIcon2);
-			plot2Button.setPressedIcon(plotIcon1);
-			plot2Button.setBounds(475*width/1280, 15*height/720, iconSize, iconSize);
-			plot2Button.setBorderPainted(false); 
-			plot2Button.setContentAreaFilled(false); 
-			plot2Button.setFocusPainted(false); 
-			plot2Button.setOpaque(false);
-			plot2Button.setToolTipText("Plot 2");
+			for (int i = 0; i < xPos.length; i++) {
+				plotButton = buildPlotButton(getPlotName(i+1), xPos[i], yPos[i]);
+				if (plotButton != null) add(plotButton);
+			}
 
-			add(plot2Button);
-			plot2Button.addActionListener(new  ActionListener() {
-				
-				@Override
-				public void actionPerformed(ActionEvent e) {
-				//	Jasbro.getInstance().getGui().showSlaveMarketScreen();
-				}
-			});		
-			
-			JButton plot3Button = new JButton(plotIcon1);
-			plot3Button.setRolloverIcon(plotIcon2);
-			plot3Button.setPressedIcon(plotIcon1);
-			plot3Button.setBounds(595*width/1280, 220*height/720, iconSize, iconSize);
-			plot3Button.setBorderPainted(false); 
-			plot3Button.setContentAreaFilled(false); 
-			plot3Button.setFocusPainted(false); 
-			plot3Button.setOpaque(false);
-			plot3Button.setToolTipText("Plot 3");
-
-			add(plot3Button);
-			plot3Button.addActionListener(new  ActionListener() {
-				
-				@Override
-				public void actionPerformed(ActionEvent e) {
-				//	Jasbro.getInstance().getGui().showSlaveMarketScreen();
-				}
-			});		
-			
-			JButton plot4Button = new JButton(plotIcon1);
-			plot4Button.setRolloverIcon(plotIcon2);
-			plot4Button.setPressedIcon(plotIcon1);
-			plot4Button.setBounds(800*width/1280, 320*height/720, iconSize, iconSize);
-			plot4Button.setBorderPainted(false); 
-			plot4Button.setContentAreaFilled(false); 
-			plot4Button.setFocusPainted(false); 
-			plot4Button.setOpaque(false);
-			plot4Button.setToolTipText("Plot 4");
-
-			add(plot4Button);
-			plot4Button.addActionListener(new  ActionListener() {
-				
-				@Override
-				public void actionPerformed(ActionEvent e) {
-				//	Jasbro.getInstance().getGui().showSlaveMarketScreen();
-				}
-			});	
-			
-			JButton plot5Button = new JButton(plotIcon1);
-			plot5Button.setRolloverIcon(plotIcon2);
-			plot5Button.setPressedIcon(plotIcon1);
-			plot5Button.setBounds(1150*width/1280, 460*height/720, iconSize, iconSize);
-			plot5Button.setBorderPainted(false); 
-			plot5Button.setContentAreaFilled(false); 
-			plot5Button.setFocusPainted(false); 
-			plot5Button.setOpaque(false);
-			plot5Button.setToolTipText("Plot 5");
-
-			add(plot5Button);
-			plot5Button.addActionListener(new  ActionListener() {
-				
-				@Override
-				public void actionPerformed(ActionEvent e) {
-				//	Jasbro.getInstance().getGui().showSlaveMarketScreen();
-				}
-			});	
-
-			JButton leftButton = new JButton(leftIcon1);
-			leftButton.setRolloverIcon(leftIcon2);
-			leftButton.setPressedIcon(leftIcon1);
-			leftButton.setBounds((int) (15*width/1280),(int) (250*height/720), backHomeBtnHeight, backHomeBtnWidth);
-			leftButton.setBorderPainted(false); 
-			leftButton.setContentAreaFilled(false); 
-			leftButton.setFocusPainted(false); 
-			leftButton.setOpaque(false);
-			add(leftButton);
-			
-			leftButton.addActionListener(new  ActionListener() {			
-				@Override
-				public void actionPerformed(ActionEvent e) {
-					Jasbro.getInstance().getGui().showBuyPlotMapScreen("map1");
-				}
-			});
-
-			JButton rightButton = new JButton(rightIcon1);
-			rightButton.setRolloverIcon(rightIcon2);
-			rightButton.setPressedIcon(rightIcon1);
-			rightButton.setBounds((int) (1210*width/1280),(int) (250*height/720), backHomeBtnHeight, backHomeBtnWidth);
-			rightButton.setBorderPainted(false); 
-			rightButton.setContentAreaFilled(false); 
-			rightButton.setFocusPainted(false); 
-			rightButton.setOpaque(false);
-			add(rightButton);
-			
-			rightButton.addActionListener(new  ActionListener() {			
-				@Override
-				public void actionPerformed(ActionEvent e) {
-					Jasbro.getInstance().getGui().showBuyPlotMapScreen("map3");
-				}
-			});
-
-		}
-
-		validate();
-		repaint();
-	}
-	
-	public void map3() {		
-		setBackgroundImage(getTownImage("map3"));
-		setBackground(Color.WHITE);
-		setLayout(null);
-		setVisible(true);
-
-		if (Jasbro.getInstance().getData().getTime() != Time.NIGHT) {
-			
-			JButton plot1Button = new JButton(plotIcon1);
-			plot1Button.setRolloverIcon(plotIcon2);
-			plot1Button.setPressedIcon(plotIcon1);
-			plot1Button.setBounds(600*width/1280, 520*height/720, iconSize, iconSize);
-			plot1Button.setBorderPainted(false); 
-			plot1Button.setContentAreaFilled(false); 
-			plot1Button.setFocusPainted(false); 
-			plot1Button.setOpaque(false);
-			plot1Button.setToolTipText("Plot 1");
-
-			add(plot1Button);
-			plot1Button.addActionListener(new  ActionListener() {
-				
-				@Override
-				public void actionPerformed(ActionEvent e) {
-				//	Jasbro.getInstance().getGui().showSlaveMarketScreen();
-				}
-			});	
-			
-			JButton plot2Button = new JButton(plotIcon1);
-			plot2Button.setRolloverIcon(plotIcon2);
-			plot2Button.setPressedIcon(plotIcon1);
-			plot2Button.setBounds(630*width/1280, 35*height/720, iconSize, iconSize);
-			plot2Button.setBorderPainted(false); 
-			plot2Button.setContentAreaFilled(false); 
-			plot2Button.setFocusPainted(false); 
-			plot2Button.setOpaque(false);
-			plot2Button.setToolTipText("Plot 2");
-
-			add(plot2Button);
-			plot2Button.addActionListener(new  ActionListener() {
-				
-				@Override
-				public void actionPerformed(ActionEvent e) {
-				//	Jasbro.getInstance().getGui().showSlaveMarketScreen();
-				}
-			});		
-			
-			JButton plot3Button = new JButton(plotIcon1);
-			plot3Button.setRolloverIcon(plotIcon2);
-			plot3Button.setPressedIcon(plotIcon1);
-			plot3Button.setBounds(970*width/1280, 125*height/720, iconSize, iconSize);
-			plot3Button.setBorderPainted(false); 
-			plot3Button.setContentAreaFilled(false); 
-			plot3Button.setFocusPainted(false); 
-			plot3Button.setOpaque(false);
-			plot3Button.setToolTipText("Plot 3");
-
-			add(plot3Button);
-			plot3Button.addActionListener(new  ActionListener() {
-				
-				@Override
-				public void actionPerformed(ActionEvent e) {
-				//	Jasbro.getInstance().getGui().showSlaveMarketScreen();
-				}
-			});		
-			
-			JButton plot4Button = new JButton(plotIcon1);
-			plot4Button.setRolloverIcon(plotIcon2);
-			plot4Button.setPressedIcon(plotIcon1);
-			plot4Button.setBounds(100*width/1280, 320*height/720, iconSize, iconSize);
-			plot4Button.setBorderPainted(false); 
-			plot4Button.setContentAreaFilled(false); 
-			plot4Button.setFocusPainted(false); 
-			plot4Button.setOpaque(false);
-			plot4Button.setToolTipText("Plot 4");
-
-			add(plot4Button);
-			plot4Button.addActionListener(new  ActionListener() {
-				
-				@Override
-				public void actionPerformed(ActionEvent e) {
-				//	Jasbro.getInstance().getGui().showSlaveMarketScreen();
-				}
-			});		
-
-			JButton leftButton = new JButton(leftIcon1);
-			leftButton.setRolloverIcon(leftIcon2);
-			leftButton.setPressedIcon(leftIcon1);
-			leftButton.setBounds((int) (15*width/1280),(int) (250*height/720), backHomeBtnHeight, backHomeBtnWidth);
-			leftButton.setBorderPainted(false); 
-			leftButton.setContentAreaFilled(false); 
-			leftButton.setFocusPainted(false); 
-			leftButton.setOpaque(false);
-			add(leftButton);
-			
-			leftButton.addActionListener(new  ActionListener() {			
-				@Override
-				public void actionPerformed(ActionEvent e) {
-					Jasbro.getInstance().getGui().showBuyPlotMapScreen("map2");
-				}
-			});
-	
-			JButton rightButton = new JButton(rightIcon1);
-			rightButton.setRolloverIcon(rightIcon2);
-			rightButton.setPressedIcon(rightIcon1);
-			rightButton.setBounds((int) (1210*width/1280),(int) (250*height/720), backHomeBtnHeight, backHomeBtnWidth);
-			rightButton.setBorderPainted(false); 
-			rightButton.setContentAreaFilled(false); 
-			rightButton.setFocusPainted(false); 
-			rightButton.setOpaque(false);
-			add(rightButton);
-			
-			rightButton.addActionListener(new  ActionListener() {			
-				@Override
-				public void actionPerformed(ActionEvent e) {
-					Jasbro.getInstance().getGui().showBuyPlotMapScreen("map4");
-				}
-			});
-
-		}
-
-		validate();
-		repaint();
-	}
-	
-	public void map4() {		
-		setBackgroundImage(getTownImage("map4"));
-		setBackground(Color.WHITE);
-		setLayout(null);
-		setVisible(true);
-
-		if (Jasbro.getInstance().getData().getTime() != Time.NIGHT) {
-			
-			JButton plot1Button = new JButton(plotIcon1);
-			plot1Button.setRolloverIcon(plotIcon2);
-			plot1Button.setPressedIcon(plotIcon1);
-			plot1Button.setBounds(550*width/1280, 585*height/720, iconSize, iconSize);
-			plot1Button.setBorderPainted(false); 
-			plot1Button.setContentAreaFilled(false); 
-			plot1Button.setFocusPainted(false); 
-			plot1Button.setOpaque(false);
-			plot1Button.setToolTipText("Plot 1");
-
-			add(plot1Button);
-			plot1Button.addActionListener(new  ActionListener() {
-				
-				@Override
-				public void actionPerformed(ActionEvent e) {
-				//	Jasbro.getInstance().getGui().showSlaveMarketScreen();
-				}
-			});	
-			
-			JButton plot2Button = new JButton(plotIcon1);
-			plot2Button.setRolloverIcon(plotIcon2);
-			plot2Button.setPressedIcon(plotIcon1);
-			plot2Button.setBounds(150*width/1280,385*height/720, iconSize, iconSize);
-			plot2Button.setBorderPainted(false); 
-			plot2Button.setContentAreaFilled(false); 
-			plot2Button.setFocusPainted(false); 
-			plot2Button.setOpaque(false);
-			plot2Button.setToolTipText("Plot 2");
-
-			add(plot2Button);
-			plot2Button.addActionListener(new  ActionListener() {
-				
-				@Override
-				public void actionPerformed(ActionEvent e) {
-				//	Jasbro.getInstance().getGui().showSlaveMarketScreen();
-				}
-			});		
-			
-			JButton plot3Button = new JButton(plotIcon1);
-			plot3Button.setRolloverIcon(plotIcon2);
-			plot3Button.setPressedIcon(plotIcon1);
-			plot3Button.setBounds(670*width/1280, 75*height/720, iconSize, iconSize);
-			plot3Button.setBorderPainted(false); 
-			plot3Button.setContentAreaFilled(false); 
-			plot3Button.setFocusPainted(false); 
-			plot3Button.setOpaque(false);
-			plot3Button.setToolTipText("Plot 3");
-
-			add(plot3Button);
-			plot3Button.addActionListener(new  ActionListener() {
-				
-				@Override
-				public void actionPerformed(ActionEvent e) {
-				//	Jasbro.getInstance().getGui().showSlaveMarketScreen();
-				}
-			});		
-			
-			JButton plot4Button = new JButton(plotIcon1);
-			plot4Button.setRolloverIcon(plotIcon2);
-			plot4Button.setPressedIcon(plotIcon1);
-			plot4Button.setBounds(685*width/1280, 323*height/720, iconSize, iconSize);
-			plot4Button.setBorderPainted(false); 
-			plot4Button.setContentAreaFilled(false); 
-			plot4Button.setFocusPainted(false); 
-			plot4Button.setOpaque(false);
-			plot4Button.setToolTipText("Plot 4");
-
-			add(plot4Button);
-			plot4Button.addActionListener(new  ActionListener() {
-				
-				@Override
-				public void actionPerformed(ActionEvent e) {
-				//	Jasbro.getInstance().getGui().showSlaveMarketScreen();
-				}
-			});	
-			
-			JButton plot5Button = new JButton(plotIcon1);
-			plot5Button.setRolloverIcon(plotIcon2);
-			plot5Button.setPressedIcon(plotIcon1);
-			plot5Button.setBounds(190*width/1280, 170*height/720, iconSize, iconSize);
-			plot5Button.setBorderPainted(false); 
-			plot5Button.setContentAreaFilled(false); 
-			plot5Button.setFocusPainted(false); 
-			plot5Button.setOpaque(false);
-			plot5Button.setToolTipText("Plot 5");
-
-			add(plot5Button);
-			plot5Button.addActionListener(new  ActionListener() {
-				
-				@Override
-				public void actionPerformed(ActionEvent e) {
-				//	Jasbro.getInstance().getGui().showSlaveMarketScreen();
-				}
-			});		
-			
-			JButton leftButton = new JButton(leftIcon1);
-			leftButton.setRolloverIcon(leftIcon2);
-			leftButton.setPressedIcon(leftIcon1);
-			leftButton.setBounds((int) (15*width/1280),(int) (250*height/720), backHomeBtnHeight, backHomeBtnWidth);
-			leftButton.setBorderPainted(false); 
-			leftButton.setContentAreaFilled(false); 
-			leftButton.setFocusPainted(false); 
-			leftButton.setOpaque(false);
-			add(leftButton);
-			
-			leftButton.addActionListener(new  ActionListener() {			
-				@Override
-				public void actionPerformed(ActionEvent e) {
-					Jasbro.getInstance().getGui().showBuyPlotMapScreen("map3");
-				}
-			});
-			
-			JButton rightButton = new JButton(rightIcon1);
-			rightButton.setRolloverIcon(rightIcon2);
-			rightButton.setPressedIcon(rightIcon1);
-			rightButton.setBounds((int) (1210*width/1280),(int) (250*height/720), backHomeBtnHeight, backHomeBtnWidth);
-			rightButton.setBorderPainted(false); 
-			rightButton.setContentAreaFilled(false); 
-			rightButton.setFocusPainted(false); 
-			rightButton.setOpaque(false);
-			add(rightButton);
-			
-			rightButton.addActionListener(new  ActionListener() {			
-				@Override
-				public void actionPerformed(ActionEvent e) {
-					Jasbro.getInstance().getGui().showBuyPlotMapScreen("map1");
-				}
-			});
-
+			buildMapChangeButtons();
 		}
 
 		validate();
@@ -662,5 +171,103 @@ public class BuyPlotMapMenu extends MyImage {
 			default:
 				return new ImageData("images/backgrounds/town_morning.png");
 		}
-	}	
+	}
+
+	private String getMap() {
+		return "map" + mapID;
+	}
+
+	private String getPlotName(int num) {
+		return getMap() + ".plot" + num;
+	}
+
+	/**
+	 * Builds the button that allows the user to purchase a plot.
+	 * @param plotID The plot's id.
+	 * @param x The x position of the button. (This will scaled according to the ratio.)
+	 * @param y The y position of the button. (This will scaled according to the ratio.)
+	 * @return The button to attach to the UI.
+	 */
+	private JButton buildPlotButton(final String plotID, int x, int y) {
+		final GameData gameData = Jasbro.getInstance().getData();
+		final Plot curPlot = gameData.getRealEstateSystem().getPlot(plotID);
+
+
+		if (curPlot == null) {
+			LOG.warn("Couldn't make button for plot {} on map {}", plotID, mapID);
+			return null; // TODO Throw error
+		}
+
+		final boolean owned = Jasbro.getInstance().getData().getRealEstateSystem().getOwnedPlot(plotID) != null;
+
+		JButton plotButton = new JButton((owned) ? plotIcon3 : plotIcon1);
+		plotButton.setRolloverIcon((owned) ? plotIcon4 : plotIcon2);
+		plotButton.setPressedIcon((owned) ? plotIcon3 : plotIcon1);
+		plotButton.setBounds(x *width/1280, y*height/720, iconSize, iconSize);
+		plotButton.setBorderPainted(false);
+		plotButton.setContentAreaFilled(false);
+		plotButton.setFocusPainted(false);
+		plotButton.setOpaque(false);
+		plotButton.setToolTipText(TextUtil.t(plotID)); // TODO This may need to be changed if maps are to become defined by users.
+
+		plotButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if (!owned && JOptionPane.showConfirmDialog (Jasbro.getInstance().getGui(), TextUtil.t("ui.realestate.buyplot", curPlot.getCost()), TextUtil.t("ui.confirmResetPerks.title"), JOptionPane.OK_CANCEL_OPTION) == JOptionPane.YES_OPTION) {
+					if (gameData.canAfford(curPlot.getCost())) {
+						gameData.getRealEstateSystem().buyPlot(plotID, gameData);
+						Jasbro.getInstance().getGui().showBuyPlotMapScreen(mapID);
+					}
+					else
+						LOG.info("Player too poor to afford plot. {} < {}", Jasbro.getInstance().getData().getMoney(), curPlot.getCost());
+				}
+			}
+		});
+
+		return plotButton;
+	}
+
+	/**
+	 * Builds the arrows on the sides of the buy plot screen that navigate between the different maps.
+	 */
+	private void buildMapChangeButtons() {
+		final int left = (mapID - 1 <= 0) ? mapSize: mapID - 1;
+		final int right = (mapID % mapSize) + 1;
+
+		JButton leftButton = new JButton(leftIcon1);
+		leftButton.setRolloverIcon(leftIcon2);
+		leftButton.setPressedIcon(leftIcon1);
+		leftButton.setBounds((int) (15*width/1280),(int) (250*height/720), backHomeBtnHeight, backHomeBtnWidth);
+		leftButton.setBorderPainted(false);
+		leftButton.setContentAreaFilled(false);
+		leftButton.setFocusPainted(false);
+		leftButton.setOpaque(false);
+		add(leftButton);
+
+		leftButton.addActionListener(new  ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				LOG.info("Left button goes to: {}", left);
+				Jasbro.getInstance().getGui().showBuyPlotMapScreen(left);
+			}
+		});
+
+		JButton rightButton = new JButton(rightIcon1);
+		rightButton.setRolloverIcon(rightIcon2);
+		rightButton.setPressedIcon(rightIcon1);
+		rightButton.setBounds((int) (1210*width/1280),(int) (250*height/720), backHomeBtnHeight, backHomeBtnWidth);
+		rightButton.setBorderPainted(false);
+		rightButton.setContentAreaFilled(false);
+		rightButton.setFocusPainted(false);
+		rightButton.setOpaque(false);
+		add(rightButton);
+
+		rightButton.addActionListener(new  ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				LOG.info("Right button goes to: {}", right);
+				Jasbro.getInstance().getGui().showBuyPlotMapScreen(right);
+			}
+		});
+	}
 }

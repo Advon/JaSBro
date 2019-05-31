@@ -416,7 +416,7 @@ public class RPGView extends JFrame {
 		}
 	}
 	
-	public void showBuyPlotMapScreen(String map) {
+	public void showBuyPlotMapScreen(int map) {
 		synchronized (getTreeLock()) {
 			removeAllLayers();
 			actualScreen = Screen.BUYPLOT;

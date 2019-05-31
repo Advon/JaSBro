@@ -78,17 +78,17 @@ public class RealEstateMenu extends JPanel {
 		buyPlotButton.setFocusPainted(false); 
 		buyPlotButton.setOpaque(false);
 		/* TODO Add the feature to replace bought plots with an owned sign. Also to actually implement plots.
+		 */
 	    try {
 			add(buyPlotButton);
 	    } catch (java.lang.NullPointerException e) {
 	    	// We need a way to remove this error
 	    }
-		 */
 		buyPlotButton.addActionListener(new  ActionListener() {
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				Jasbro.getInstance().getGui().showBuyPlotMapScreen("map1");
+				Jasbro.getInstance().getGui().showBuyPlotMapScreen(1);
 			}
 		});
 		

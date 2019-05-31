@@ -11,7 +11,7 @@ public class Plot {
 	private final String id;
 	private final int maxSize;
 	private final int cost;
-	private final int quality;
+	private final int quality; // I'm assuming this influences customers. I don't really know. C-L
 	private House house;
 	
 	public Plot(final String id, final int maxSize, final int cost, final int quality, final House house) {

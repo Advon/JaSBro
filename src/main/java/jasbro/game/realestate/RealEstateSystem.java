@@ -33,16 +33,44 @@ public class RealEstateSystem {
 		this.plots = new HashMap<>();
 		this.ownedPlots = new ArrayList<>();
 		this.freePlots = new ArrayList<>();
+	}
 
-		// TODO move this somewhere else
-		this.plots.put("starting-plot", new Plot("starting-plot", 4, 0, 0, HouseUtil.newHouse(HouseType.HUT)));
-		this.ownedPlots.add(this.plots.get("starting-plot"));
+	public void init() {
+		Plot start = createPlot("starting-plot", 4, 0, 0, HouseUtil.newHouse(HouseType.HUT));
+
+		// Map 1
+		this.freePlots.add(createPlot("map1.plot1", 6, 0, 0));
+		this.freePlots.add(createPlot("map1.plot2", 6, 0, 0));
+		this.freePlots.add(createPlot("map1.plot3", 6, 0, 0));
+		this.freePlots.add(createPlot("map1.plot4", 6, 0, 0));
+
+		// Map 2
+		this.freePlots.add(createPlot("map2.plot1", 6, 0, 0));
+		this.freePlots.add(createPlot("map2.plot2", 6, 0, 0));
+		this.freePlots.add(createPlot("map2.plot3", 6, 0, 0));
+		this.freePlots.add(createPlot("map2.plot4", 6, 0, 0));
+		this.freePlots.add(createPlot("map2.plot5", 6, 0, 0));
+
+		// Map 3
+		this.freePlots.add(createPlot("map3.plot1", 6, 0, 0));
+		this.freePlots.add(createPlot("map3.plot2", 6, 0, 0));
+		this.freePlots.add(createPlot("map3.plot3", 6, 0, 0));
+		this.freePlots.add(createPlot("map3.plot4", 6, 0, 0));
+
+		// Map 4
+		this.freePlots.add(createPlot("map4.plot1", 6, 0, 0));
+		this.freePlots.add(createPlot("map4.plot2", 6, 0, 0));
+		this.freePlots.add(createPlot("map4.plot3", 6, 0, 0));
+		this.freePlots.add(createPlot("map4.plot4", 6, 0, 0));
+		this.freePlots.add(createPlot("map4.plot5", 6, 0, 0));
+
+		this.ownedPlots.add(start);
 	}
 
 	public Plot createPlot(final String id, final int maxSize, final int cost, final int quality, final House house) {
 		Validate.notBlank(id, "Attempted to create a plot with a blank ID");
 		if (this.plots.containsKey(id)) {
-			LOG.error("Attempted to create plot with duplicate id '%s'", id);
+			LOG.error("Attempted to create plot with duplicate id '{}'", id);
 			return null;
 		}
 		Plot p = new Plot(id, maxSize, cost, quality, house);
@@ -141,7 +169,7 @@ public class RealEstateSystem {
 		if (canPlaceHouse(plotId, house)) {
 			plot.setHouse(house);
 		} else {
-			LOG.warn("Can't place house '%s' on plot '%s'. This probably shouldn't have been reached.",
+			LOG.warn("Can't place house '{}' on plot '{}'. This probably shouldn't have been reached.",
 					house.getHouseType(), plotId);
 		}
 	}
