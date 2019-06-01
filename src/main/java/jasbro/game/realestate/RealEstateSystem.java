@@ -36,33 +36,33 @@ public class RealEstateSystem {
 	}
 
 	public void init() {
-		Plot start = createPlot("starting-plot", 4, 0, 0, HouseUtil.newHouse(HouseType.HUT));
+		Plot start = createPlot("start.plot", 4, 0, 0, HouseUtil.newHouse(HouseType.HUT));
 
 		// Map 1
-		this.freePlots.add(createPlot("map1.plot1", 6, 0, 0));
-		this.freePlots.add(createPlot("map1.plot2", 6, 0, 0));
-		this.freePlots.add(createPlot("map1.plot3", 6, 0, 0));
-		this.freePlots.add(createPlot("map1.plot4", 6, 0, 0));
+		this.freePlots.add(createPlot("map1.plot1", 4, 10000, 0));
+		this.freePlots.add(createPlot("map1.plot2", 12, 30000, 0));
+		this.freePlots.add(createPlot("map1.plot3", 8, 20000, 0));
+		this.freePlots.add(createPlot("map1.plot4", 6, 15000, 0));
 
 		// Map 2
-		this.freePlots.add(createPlot("map2.plot1", 6, 0, 0));
-		this.freePlots.add(createPlot("map2.plot2", 6, 0, 0));
-		this.freePlots.add(createPlot("map2.plot3", 6, 0, 0));
-		this.freePlots.add(createPlot("map2.plot4", 6, 0, 0));
-		this.freePlots.add(createPlot("map2.plot5", 6, 0, 0));
+		this.freePlots.add(createPlot("map2.plot1", 8, 20000, 0));
+		this.freePlots.add(createPlot("map2.plot2", 12, 30000, 0)); // May change
+		this.freePlots.add(createPlot("map2.plot3", 4, 10000, 0));
+		this.freePlots.add(createPlot("map2.plot4", 6, 15000, 0));
+		this.freePlots.add(createPlot("map2.plot5", 10, 25000, 0));
 
 		// Map 3
-		this.freePlots.add(createPlot("map3.plot1", 6, 0, 0));
-		this.freePlots.add(createPlot("map3.plot2", 6, 0, 0));
-		this.freePlots.add(createPlot("map3.plot3", 6, 0, 0));
-		this.freePlots.add(createPlot("map3.plot4", 6, 0, 0));
+		this.freePlots.add(createPlot("map3.plot1", 14, 35000, 0));
+		this.freePlots.add(createPlot("map3.plot2", 10, 25000, 0));
+		this.freePlots.add(createPlot("map3.plot3", 6, 15000, 0));
+		this.freePlots.add(createPlot("map3.plot4", 8, 20000, 0));
 
 		// Map 4
-		this.freePlots.add(createPlot("map4.plot1", 6, 0, 0));
-		this.freePlots.add(createPlot("map4.plot2", 6, 0, 0));
-		this.freePlots.add(createPlot("map4.plot3", 6, 0, 0));
-		this.freePlots.add(createPlot("map4.plot4", 6, 0, 0));
-		this.freePlots.add(createPlot("map4.plot5", 6, 0, 0));
+		this.freePlots.add(createPlot("map4.plot1", 6, 15000, 0));
+		this.freePlots.add(createPlot("map4.plot2", 8, 20000, 0));
+		this.freePlots.add(createPlot("map4.plot3", 16, 40000, 0));
+		this.freePlots.add(createPlot("map4.plot4", 12, 30000, 0));
+		this.freePlots.add(createPlot("map4.plot5", 8, 20000, 0));
 
 		this.ownedPlots.add(start);
 	}
@@ -162,11 +162,11 @@ public class RealEstateSystem {
 	 */
 	public void buildHouse(final String plotId, final House house, final GameData data) {
 		// TODO how to handle the house? move house selection/creation here?
-		// TODO charge them money
 
 		Plot plot = getOwnedPlot(plotId);
 
-		if (canPlaceHouse(plotId, house)) {
+		if (data.canAfford(house.getValue()) && canPlaceHouse(plotId, house)) {
+			data.spendMoney(house.getValue(), plot);
 			plot.setHouse(house);
 		} else {
 			LOG.warn("Can't place house '{}' on plot '{}'. This probably shouldn't have been reached.",
@@ -183,7 +183,12 @@ public class RealEstateSystem {
 	 *            The GameData for charging
 	 */
 	public void demolishHouse(final String plotId, final GameData data) {
-		// TODO charge them money
+		Plot plot = getRequiredOwnedPlot(plotId);
+
+		if(data.canAfford(plot.getHouse().getValue() / 2)) {
+			data.spendMoney(plot.getHouse().getValue() / 2, plot);
+			plot.setHouse(null);
+		}
 	}
 
 	private Plot getRequiredPlot(final String id) {

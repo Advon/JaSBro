@@ -1,6 +1,7 @@
 package jasbro.game.realestate;
 
 import jasbro.game.housing.House;
+import jasbro.texts.TextUtil;
 
 /**
  * A plot of land. Contains a house of some capped size.
@@ -52,5 +53,10 @@ public class Plot {
 
 	public House getHouse() {
 		return this.house;
+	}
+
+	@Override
+	public String toString() {
+		return TextUtil.t(id);
 	}
 }

@@ -617,7 +617,7 @@ public class RPGView extends JFrame {
 		case BLACKMARKET: showShopScreen("blackmarket"); break;
 		case BOOKSTORE: showShopScreen("book"); break;
 		case BUILDER: showBuildersGuildScreen(); break;
-		case BUYPLOT: showBuyPlotMapScreen("map1");
+		case BUYPLOT: showBuyPlotMapScreen(1); break;
 		case CARPENTRY: showInteriorDecoration(); break;
 		case GENERALSTORE: showShopScreen("general"); break;
 		case GUILD: showSlaverGuildScreen(); break;

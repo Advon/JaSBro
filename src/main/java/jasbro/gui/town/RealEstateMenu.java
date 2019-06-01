@@ -1,26 +1,15 @@
 package jasbro.gui.town;
 
-import java.awt.Color;
-import java.awt.Font;
-import java.awt.GridLayout;
-import java.awt.Image;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.HierarchyBoundsAdapter;
-import java.awt.event.HierarchyEvent;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
+import java.awt.*;
+import java.awt.event.*;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.swing.ImageIcon;
-import javax.swing.JButton;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.SwingUtilities;
+import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
 
+import com.jgoodies.forms.factories.FormFactory;
 import com.jgoodies.forms.layout.ColumnSpec;
 import com.jgoodies.forms.layout.FormLayout;
 import com.jgoodies.forms.layout.RowSpec;
@@ -29,6 +18,8 @@ import jasbro.Jasbro;
 import jasbro.game.housing.House;
 import jasbro.game.housing.HouseType;
 import jasbro.game.housing.HouseUtil;
+import jasbro.game.realestate.Plot;
+import jasbro.game.realestate.RealEstateSystem;
 import jasbro.gui.GuiUtil;
 import jasbro.gui.pages.MessageScreen;
 import jasbro.gui.pictures.ImageData;
@@ -41,6 +32,8 @@ import org.apache.logging.log4j.Logger;
 public class RealEstateMenu extends JPanel {
 	private List<JButton> buyButtons = new ArrayList<JButton>();
 	private List<House> houses;
+
+	private JPanel plotDetailsPanel;
 	
 	public RealEstateMenu() {
 		removeAll();
@@ -156,6 +149,8 @@ public class RealEstateMenu extends JPanel {
 				ColumnSpec.decode("pref:grow(10)"),
 				ColumnSpec.decode("pref:grow"),
 				ColumnSpec.decode("pref:grow(8)"),
+				ColumnSpec.decode("pref:grow"),
+				ColumnSpec.decode("pref:grow(8)"),
 				ColumnSpec.decode("pref:grow"),},
 				new RowSpec[] {
 				RowSpec.decode("20dlu"),
@@ -167,8 +162,57 @@ public class RealEstateMenu extends JPanel {
 			public void ancestorResized(HierarchyEvent e) {
 				revalidate();
 			}
-		});;		
-		
+		});
+
+		//Panel for changing plot shit
+		{
+			final JPanel plotPanel = new JPanel();
+			plotPanel.setBackground(GuiUtil.DEFAULTTRANSPARENTCOLOR);
+			plotPanel.setBorder(new LineBorder(new Color(139, 69, 19), 1, false));
+			plotPanel.setOpaque(true);
+			add(plotPanel, "7, 2, fill, fill");
+
+			plotPanel.setLayout(new FormLayout(new ColumnSpec[]{
+						ColumnSpec.decode("1dlu:grow"),
+					},
+					new RowSpec[]{
+						FormFactory.DEFAULT_ROWSPEC,
+						RowSpec.decode("20dlu"),
+						FormFactory.PREF_ROWSPEC,
+						RowSpec.decode("20dlu"),
+						RowSpec.decode("default:grow"),
+						RowSpec.decode("default:grow(40)"),
+					}));
+
+			JLabel lblPlot = new JLabel(TextUtil.t("ui.realestate.plotdetails"));
+			lblPlot.setFont(new Font("Tahoma", Font.BOLD, 15));
+			plotPanel.add(lblPlot, "1, 1, center, default");
+
+			final JComboBox<Plot> plotComboBox = new JComboBox<>();
+
+			plotComboBox.addItem(null);
+			plotComboBox.setSelectedIndex(0);
+			for (Plot p: Jasbro.getInstance().getData().getRealEstateSystem().getOwnedPlots()) {
+				plotComboBox.addItem(p);
+			}
+
+			plotComboBox.addItemListener(new ItemListener() {
+				@Override
+				public void itemStateChanged(ItemEvent e) {
+					displayPlotDetails((Plot) plotComboBox.getSelectedItem());
+					validate();
+					repaint();
+				}
+			});
+
+			plotComboBox.setBorder(new EmptyBorder(2, 2, 2, 2));
+			plotPanel.add(plotComboBox, "1, 3, fill, top");
+
+			plotDetailsPanel = new JPanel();
+			plotDetailsPanel.setOpaque(false);
+			plotPanel.add(plotDetailsPanel, "1, 5, fill, default");
+		}
+
 		//Panel for selling houses
 		{
 			final JPanel sellHousePanel = new JPanel();
@@ -271,7 +315,161 @@ public class RealEstateMenu extends JPanel {
 	        }		
 		});
 	}
-	
+
+	private void displayPlotDetails(final Plot selectedPlot) {
+		plotDetailsPanel.removeAll();
+		plotDetailsPanel.setLayout(new FormLayout(new ColumnSpec[]{
+			ColumnSpec.decode("1dlu:grow")
+		},
+		new RowSpec[]{
+			FormFactory.DEFAULT_ROWSPEC,
+			RowSpec.decode("default:grow"),
+			RowSpec.decode("default:none"),
+			RowSpec.decode("5dlu"),
+			RowSpec.decode("default:none"),
+			RowSpec.decode("5dlu"),
+			RowSpec.decode("default:none"),
+		}));
+
+		if (selectedPlot != null) {
+			final JButton buyHouseButton = new JButton();
+			final JButton demoHouseButton = new JButton();
+
+			final JComboBox<HouseType> houseTypeJComboBox = new JComboBox<>();
+			houseTypeJComboBox.addItem(null);
+			houseTypeJComboBox.setSelectedIndex(0);
+
+			/*
+			 * Listeners START
+			 */
+			buyHouseButton.addActionListener(new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					 House h = HouseUtil.newHouse((HouseType) houseTypeJComboBox.getSelectedItem());
+					 int demoCost = (selectedPlot.getHouse() == null) ? 0 : selectedPlot.getHouse().getValue()/2;
+
+					if (Jasbro.getInstance().getData().canAfford(h.getValue() + demoCost)) {
+						String message;
+
+						if (demoCost > 0) {
+							message = TextUtil.t("ui.realestate.replaceplot", h.getName(),
+									selectedPlot.getHouse().getName(), TextUtil.t(selectedPlot.getId()));
+							Jasbro.getInstance().getData().getRealEstateSystem().demolishHouse(selectedPlot.getId(),
+																							   Jasbro.getInstance().getData());
+						}
+						else {
+							message = TextUtil.t("ui.realestate.buildplot", h.getName(), TextUtil.t(selectedPlot.getId()));
+						}
+
+						Jasbro.getInstance().getData().getRealEstateSystem().buildHouse(selectedPlot.getId(), h,
+																						Jasbro.getInstance().getData());
+						new MessageScreen(message, h.getImage(), null);
+						init();
+					}
+				}
+			});
+
+			demoHouseButton.addActionListener(new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					House h = selectedPlot.getHouse();
+					if (Jasbro.getInstance().getData().canAfford(h.getValue()/2)) {
+						Jasbro.getInstance().getData().getRealEstateSystem().demolishHouse(selectedPlot.getId(),
+																						   Jasbro.getInstance().getData());
+						new MessageScreen(TextUtil.t("ui.realestate.demoplot", h.getName(), TextUtil.t(selectedPlot.getId())),
+										  h.getImage(), null);
+						init();
+					}
+				}
+			});
+
+			houseTypeJComboBox.addItemListener(new ItemListener() {
+				@Override
+				public void itemStateChanged(ItemEvent e) {
+					if (houseTypeJComboBox.getSelectedItem() != null) {
+						HouseType ht = (HouseType) houseTypeJComboBox.getSelectedItem();
+
+						int demoCost = (selectedPlot.getHouse() == null) ? 0 : selectedPlot.getHouse().getValue() / 2;
+						buyHouseButton.setText(TextUtil.t("ui.realestate.buyhouse",
+														 ht.getText(), HouseUtil.newHouse(ht).getValue() + demoCost));
+						if (selectedPlot.getHouse() != null) {
+							buyHouseButton.setEnabled(ht != selectedPlot.getHouse().getHouseType());
+						} else {
+							buyHouseButton.setEnabled(true);
+						}
+						buyHouseButton.setVisible(true);
+					} else {
+						buyHouseButton.setVisible(false);
+					}
+				}
+			});
+
+
+			/*
+			 * Listeners END
+			 */
+
+			int added = -1;
+
+			if (selectedPlot.getHouse() == null) {
+				added = -2;
+				buyHouseButton.setVisible(false);
+				demoHouseButton.setVisible(false);
+				demoHouseButton.setEnabled(false);
+			} else {
+				demoHouseButton.setText(TextUtil.t("ui.realestate.demohouse",
+													selectedPlot.getHouse().getName(),
+													selectedPlot.getHouse().getValue()/2));
+
+			}
+
+
+
+
+			for (int i = 0; i < Jasbro.getInstance().getData().getUnlocks().getAvailableHouseTypes().size(); i++) {
+				HouseType houseType = Jasbro.getInstance().getData().getUnlocks().getAvailableHouseTypes().get(i);
+				if (HouseUtil.newHouse(houseType).getRooms().size() <= selectedPlot.getMaxSize()) {
+					if (added == -1 && houseType == selectedPlot.getHouse().getHouseType()) {
+						added = i+1;
+						LogManager.getLogger(RealEstateMenu.class).info(added);
+					}
+					houseTypeJComboBox.addItem(houseType);
+				}
+			}
+
+			if (added == -1) {
+				HouseType curType = selectedPlot.getHouse().getHouseType();
+				added = houseTypeJComboBox.getItemCount();
+				houseTypeJComboBox.addItem(curType);
+			}
+
+			if (added > -1) {
+				houseTypeJComboBox.setSelectedIndex(added);
+			}
+
+			plotDetailsPanel.add(houseTypeJComboBox, "1, 3, fill, top");
+			plotDetailsPanel.add(buyHouseButton, "1,5,fill,top");
+			plotDetailsPanel.add(demoHouseButton, "1,7,fill,top");
+
+			int houseCount = 0;
+			for (Plot p: Jasbro.getInstance().getData().getRealEstateSystem().getOwnedPlots()) {
+				if (p.getHouse() != null) {
+					houseCount++;
+				}
+			}
+
+			if (houseCount < 2) {
+				demoHouseButton.setEnabled(false);
+			}
+
+		}
+
+
+
+		plotDetailsPanel.validate();
+		plotDetailsPanel.repaint();
+	}
+
 	public boolean playerOwnsHouseType(HouseType houseType) {
 		for (House house : Jasbro.getInstance().getData().getHouses()) {
 			if (houseType == house.getHouseType()) {
