@@ -105,12 +105,6 @@ public class ManagementScreen extends JPanel implements MyEventListener {
 	 */
 	public ManagementScreen() {
 		Jasbro.getInstance().getGui().updateStatus(); //A bit of a hack to ensure status is updated at the start
-
-		// TODO REMOVE
-		for (HouseType ht: HouseType.values())
-		{
-			LogManager.getLogger(ManagementScreen.class).warn("{} has {} rooms.", ht.getText(), HouseUtil.newHouse(ht).getRooms().size());
-		}
 		
 		setLayout(new FormLayout(new ColumnSpec[] {
 				ColumnSpec.decode("1dlu:grow(2)"),

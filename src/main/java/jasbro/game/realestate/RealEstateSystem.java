@@ -145,7 +145,7 @@ public class RealEstateSystem {
 	public void sellPlot(final String id, final GameData data) {
 		Plot plot = getRequiredOwnedPlot(id);
 
-		data.earnMoney(plot.getCost(), plot);
+		data.earnMoney(plot.getCost()/2, plot);
 		ownedPlots.remove(plot);
 		freePlots.add(plot);
 	}
@@ -187,6 +187,7 @@ public class RealEstateSystem {
 
 		if(data.canAfford(plot.getHouse().getValue() / 2)) {
 			data.spendMoney(plot.getHouse().getValue() / 2, plot);
+			plot.getHouse().empty();
 			plot.setHouse(null);
 		}
 	}

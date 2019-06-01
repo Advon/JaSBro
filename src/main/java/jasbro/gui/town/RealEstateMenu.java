@@ -404,7 +404,17 @@ public class RealEstateMenu extends JPanel {
 				}
 			});
 
-
+			houseTypeJComboBox.setRenderer(new DefaultListCellRenderer() {
+				@Override
+				public Component getListCellRendererComponent(JList<?> list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
+					JLabel lbl = (JLabel) super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
+					if (value != null)
+						lbl.setText(((HouseType)value).getText());
+					else
+						lbl.setText(" ");
+					return lbl;
+				}
+			});
 			/*
 			 * Listeners END
 			 */
@@ -423,15 +433,11 @@ public class RealEstateMenu extends JPanel {
 
 			}
 
-
-
-
 			for (int i = 0; i < Jasbro.getInstance().getData().getUnlocks().getAvailableHouseTypes().size(); i++) {
 				HouseType houseType = Jasbro.getInstance().getData().getUnlocks().getAvailableHouseTypes().get(i);
 				if (HouseUtil.newHouse(houseType).getRooms().size() <= selectedPlot.getMaxSize()) {
 					if (added == -1 && houseType == selectedPlot.getHouse().getHouseType()) {
 						added = i+1;
-						LogManager.getLogger(RealEstateMenu.class).info(added);
 					}
 					houseTypeJComboBox.addItem(houseType);
 				}
@@ -463,8 +469,6 @@ public class RealEstateMenu extends JPanel {
 			}
 
 		}
-
-
 
 		plotDetailsPanel.validate();
 		plotDetailsPanel.repaint();

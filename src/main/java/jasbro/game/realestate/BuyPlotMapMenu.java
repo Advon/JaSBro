@@ -98,16 +98,16 @@ public class BuyPlotMapMenu extends MyImage {
 		Image plotImage4 = plotIcon4.getImage().getScaledInstance( iconSize, iconSize,  java.awt.Image.SCALE_SMOOTH );
 		plotIcon4 = new ImageIcon(plotImage4);
 		
-		Image leftImage1 = leftIcon1.getImage().getScaledInstance( backHomeBtnHeight, backHomeBtnWidth,  java.awt.Image.SCALE_SMOOTH ) ;  
+		Image leftImage1 = leftIcon1.getImage().getScaledInstance( backHomeBtnHeight, backHomeBtnWidth,  java.awt.Image.SCALE_SMOOTH ) ;
 		leftIcon1 = new ImageIcon(leftImage1);
 		
-		Image leftImage2 = leftIcon2.getImage().getScaledInstance( backHomeBtnHeight, backHomeBtnWidth,  java.awt.Image.SCALE_SMOOTH ) ;  
+		Image leftImage2 = leftIcon2.getImage().getScaledInstance( backHomeBtnHeight, backHomeBtnWidth,  java.awt.Image.SCALE_SMOOTH ) ;
 		leftIcon2 = new ImageIcon(leftImage2);
 		
-		Image rightImage1 = rightIcon1.getImage().getScaledInstance( backHomeBtnHeight, backHomeBtnWidth,  java.awt.Image.SCALE_SMOOTH ) ;  
+		Image rightImage1 = rightIcon1.getImage().getScaledInstance( backHomeBtnHeight, backHomeBtnWidth,  java.awt.Image.SCALE_SMOOTH ) ;
 		rightIcon1 = new ImageIcon(rightImage1);
 				
-		Image rightImage2 = rightIcon2.getImage().getScaledInstance( backHomeBtnHeight, backHomeBtnWidth,  java.awt.Image.SCALE_SMOOTH ) ;  
+		Image rightImage2 = rightIcon2.getImage().getScaledInstance( backHomeBtnHeight, backHomeBtnWidth,  java.awt.Image.SCALE_SMOOTH ) ;
 		rightIcon2 = new ImageIcon(rightImage2);
 
 		this.mapID = mapID;
@@ -115,6 +115,7 @@ public class BuyPlotMapMenu extends MyImage {
 	}
 
 	public void displayMap() {
+		removeAll();
 		setBackgroundImage(getTownImage(getMap()));
 		setBackground(Color.WHITE);
 		setLayout(null);
@@ -216,10 +217,13 @@ public class BuyPlotMapMenu extends MyImage {
 				if (!owned && JOptionPane.showConfirmDialog (Jasbro.getInstance().getGui(), TextUtil.t("ui.realestate.buyplot", curPlot.getCost()), TextUtil.t("ui.confirmResetPerks.title"), JOptionPane.OK_CANCEL_OPTION) == JOptionPane.YES_OPTION) {
 					if (gameData.canAfford(curPlot.getCost())) {
 						gameData.getRealEstateSystem().buyPlot(plotID, gameData);
-						Jasbro.getInstance().getGui().showBuyPlotMapScreen(mapID);
+						displayMap();
 					}
 					else
 						LOG.info("Player too poor to afford plot. {} < {}", Jasbro.getInstance().getData().getMoney(), curPlot.getCost());
+				} else if (owned && JOptionPane.showConfirmDialog(Jasbro.getInstance().getGui(), TextUtil.t("ui.realestate.sellplot", curPlot.getCost()/2)) == JOptionPane.YES_OPTION) {
+					gameData.getRealEstateSystem().sellPlot(plotID, gameData);
+					displayMap();
 				}
 			}
 		});
