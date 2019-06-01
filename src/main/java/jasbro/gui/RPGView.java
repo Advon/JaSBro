@@ -82,7 +82,8 @@ public class RPGView extends JFrame {
 	
 	private enum Screen { TOWN, BUILDER, SLAVE, SCHOOL, MARKET, MARKET2 , GUILD, ARCHITECT, CARPENTRY, REALESTATE,
 						BOOKSTORE, MAGICSHOP, ADULTSTORE, GENERALSTORE,  TAILOR, ADVENTURERSTORE, SLAVEPENS, MAINMENU,
-						AUCTIONHOUSE, LABORATORY, ALCHEMIST, TRAVELING, BLACKMARKET, TRAINERBAR, ADVENTURERSGUILD, NONE;
+						AUCTIONHOUSE, LABORATORY, ALCHEMIST, TRAVELING, BLACKMARKET, TRAINERBAR, ADVENTURERSGUILD,
+						HOUSEMANAGEMENT, NONE, NEWGAME, BUYPLOT;
 	};
 	private Screen actualScreen = Screen.NONE;
 	
@@ -111,6 +112,7 @@ public class RPGView extends JFrame {
 	public void showStartScreen() {
 		synchronized (getTreeLock()) {
 			removeAllLayers();
+			actualScreen = Screen.NEWGAME;
 			addLayer(new NewGameScreen());
 		}
 	}
@@ -126,6 +128,7 @@ public class RPGView extends JFrame {
 	public void showHouseManagementScreen() {
 		synchronized (getTreeLock()) {
 			removeAllLayers();
+			actualScreen = Screen.HOUSEMANAGEMENT;
 			addLayer(new ManagementScreen());
 		}
 	}
@@ -342,7 +345,8 @@ public class RPGView extends JFrame {
 	public void showTownScreen() {
 		synchronized (getTreeLock()) {
 			removeAllLayers();
-			if(ConfigHandler.getSetting(Settings.TOWNSCREENNEW, true) == true){
+			actualScreen = Screen.TOWN;
+			if(ConfigHandler.getSetting(Settings.TOWNSCREENNEW, true)){
 				addLayer(new TownMenuNew());
 			}			
 			else{
@@ -415,6 +419,7 @@ public class RPGView extends JFrame {
 	public void showBuyPlotMapScreen(String map) {
 		synchronized (getTreeLock()) {
 			removeAllLayers();
+			actualScreen = Screen.BUYPLOT;
 			addLayer(new BuyPlotMapMenu(map));
 		}
 	}
@@ -612,14 +617,17 @@ public class RPGView extends JFrame {
 		case BLACKMARKET: showShopScreen("blackmarket"); break;
 		case BOOKSTORE: showShopScreen("book"); break;
 		case BUILDER: showBuildersGuildScreen(); break;
+		case BUYPLOT: showBuyPlotMapScreen("map1");
 		case CARPENTRY: showInteriorDecoration(); break;
 		case GENERALSTORE: showShopScreen("general"); break;
 		case GUILD: showSlaverGuildScreen(); break;
+		case HOUSEMANAGEMENT: showHouseManagementScreen(); break;
 		case LABORATORY: showLaboratory(); break;
-		case MAGICSHOP: showShopScreen("alchemist");; break;
+		case MAGICSHOP: showShopScreen("alchemist"); break;
 		case MARKET: showGeneralMarketScreen(1); break;
 		case MARKET2: showGeneralMarketScreen(2); break;
 		case MAINMENU: showMainMenu(); break;
+		case NEWGAME: showStartScreen(); break;
 		case REALESTATE: showRealEstate(); break;
 		case SCHOOL: showSchoolScreen(); break;
 		case SLAVE: showSlaveMarketScreen(); break;
