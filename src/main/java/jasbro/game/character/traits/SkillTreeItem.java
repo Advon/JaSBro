@@ -915,7 +915,7 @@ public class SkillTreeItem {
 			map.get(Trait.LEGACYMAID).getPerkUnRequirements().add(new RequiresTraitRequirement(Trait.LEGACYADVENTURER));
 
 			map.get(Trait.LEGACYMASSEUR).getPerkUnRequirements().add(new RequiresTraitRequirement(Trait.LEGACYSTRIPPER));
-			map.get(Trait.LEGACYMASSEUR).getPerkUnRequirements().add(new RequiresTraitRequirement(Trait.LEGACYMASSEUR));
+			map.get(Trait.LEGACYMASSEUR).getPerkUnRequirements().add(new RequiresTraitRequirement(Trait.LEGACYMAID));
 			map.get(Trait.LEGACYMASSEUR).getPerkUnRequirements().add(new RequiresTraitRequirement(Trait.LEGACYNONE));
 			map.get(Trait.LEGACYMASSEUR).getPerkUnRequirements().add(new RequiresTraitRequirement(Trait.LEGACYWHORE));
 			map.get(Trait.LEGACYMASSEUR).getPerkUnRequirements().add(new RequiresTraitRequirement(Trait.LEGACYBARTENDER));

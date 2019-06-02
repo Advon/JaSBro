@@ -150,7 +150,7 @@ public class InteriorDecorationMenu extends JPanel {
 
 		final JPanel roomSlotPanel = new JPanel();
 		roomSlotPanel.setOpaque(false);
-		housePanel.add(roomSlotPanel, "1, 12, fill, top");
+		housePanel.add(roomSlotPanel, "1, 12, fill, default");
 
 		houseSelectBox.addItemListener(new ItemListener() {
 			@Override

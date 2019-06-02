@@ -1,6 +1,7 @@
 package jasbro.game.realestate;
 
 import jasbro.game.housing.House;
+import jasbro.texts.TextUtil;
 
 /**
  * A plot of land. Contains a house of some capped size.
@@ -11,7 +12,7 @@ public class Plot {
 	private final String id;
 	private final int maxSize;
 	private final int cost;
-	private final int quality;
+	private final int quality; // I'm assuming this influences customers. I don't really know. C-L
 	private House house;
 	
 	public Plot(final String id, final int maxSize, final int cost, final int quality, final House house) {
@@ -52,5 +53,10 @@ public class Plot {
 
 	public House getHouse() {
 		return this.house;
+	}
+
+	@Override
+	public String toString() {
+		return TextUtil.t(id);
 	}
 }

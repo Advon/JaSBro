@@ -6,8 +6,11 @@ import jasbro.game.character.Charakter;
 import jasbro.game.character.warnings.Severity;
 import jasbro.game.events.MyEvent;
 import jasbro.game.housing.House;
+import jasbro.game.housing.HouseType;
+import jasbro.game.housing.HouseUtil;
 import jasbro.game.interfaces.AreaInterface;
 import jasbro.game.interfaces.MyEventListener;
+import jasbro.game.realestate.Plot;
 import jasbro.game.world.Time;
 import jasbro.game.world.Unlocks;
 import jasbro.game.world.locations.DivLocations;
@@ -71,6 +74,7 @@ import com.jgoodies.forms.factories.FormFactory;
 import com.jgoodies.forms.layout.ColumnSpec;
 import com.jgoodies.forms.layout.FormLayout;
 import com.jgoodies.forms.layout.RowSpec;
+import org.apache.logging.log4j.LogManager;
 
 public class ManagementScreen extends JPanel implements MyEventListener {
 	private AreaPanel areaPanel;
@@ -517,8 +521,10 @@ public class ManagementScreen extends JPanel implements MyEventListener {
 		topPanel.add(infoPanel, "6, 1");
 		
 		if (Jasbro.getInstance().getData() != null) {
-			for (House house : Jasbro.getInstance().getData().getHouses()) {
-				areaSelection.addItem(house);
+			for (Plot plot : Jasbro.getInstance().getData().getRealEstateSystem().getOwnedPlots()) {
+				House house = plot.getHouse();
+				if (house != null)
+					areaSelection.addItem(house);
 			}
 			areaSelection.addItem(new DivLocations());
 			

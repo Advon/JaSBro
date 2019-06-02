@@ -12,7 +12,11 @@ import jasbro.game.events.EventType;
 import jasbro.game.events.MoneyChangedEvent;
 import jasbro.game.events.MyEvent;
 import jasbro.game.housing.House;
+import jasbro.game.housing.HouseType;
+import jasbro.game.housing.HouseUtil;
 import jasbro.game.items.Inventory;
+import jasbro.game.realestate.Plot;
+import jasbro.game.realestate.RealEstateSystem;
 import jasbro.game.world.CharacterLocation;
 import jasbro.game.world.Time;
 import jasbro.game.world.Unlocks;
@@ -50,12 +54,12 @@ public class GameData implements Serializable {
 	
 	private EventManager eventManager;
 	private QuestManager questManager;
+	private RealEstateSystem realEstateSystem;
 	private transient StatCollector statCollector;
 	
 	private List<Charakter> characters;
 	
 	private Charakter protagonist;
-	
 	private Map<LocationType, CharacterLocation> otherLocationMap;    
 	private DefaultPreferences defaultPreferences;
 	private Unlocks unlocks;
@@ -68,10 +72,11 @@ public class GameData implements Serializable {
 		questManager = new QuestManager();
 		inventory = new Inventory();
 		shop = new Shop();
+		realEstateSystem = new RealEstateSystem();
 	}
 	
 	public List<House> getHouses() {
-		return houses;
+		return getPlotHouses();
 	}
 	
 	public void setHouses(List<House> houses) {
@@ -249,7 +254,26 @@ public class GameData implements Serializable {
 		}
 		return unlocks;
 	}
-	
+
+	public RealEstateSystem getRealEstateSystem() {
+		if (realEstateSystem == null)
+			realEstateSystem = new RealEstateSystem();
+		return realEstateSystem;
+	}
+
+	private List<House> getPlotHouses() {
+		List<House> pHouses = new ArrayList<>();
+		for (Plot p: getRealEstateSystem().getOwnedPlots()) {
+			if (p.getHouse() != null) pHouses.add(p.getHouse());
+		}
+
+		return pHouses;
+	}
+
+	public void setRealEstateSystem(RealEstateSystem realEstateSystem) {
+		this.realEstateSystem = realEstateSystem;
+	}
+
 	public Charakter getProtagonist() {
 		if (protagonist == null) {
 			for (Charakter character : getTrainers()) {
