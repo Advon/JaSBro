@@ -7,6 +7,7 @@ import java.util.ConcurrentModificationException;
 import java.util.HashMap;
 import java.util.List;
 
+import jasbro.game.realestate.Plot;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -108,7 +109,10 @@ public class EventManager implements MyEventListener, Serializable {
 			}
 			
 			// Third handle the houses
-			for (House house : gameData.getHouses()) {
+			for (Plot plot : gameData.getRealEstateSystem().getOwnedPlots()) {
+				House house = plot.getHouse();
+				if (house == null) continue;
+
 				List<Charakter> whoresAndSupports = new ArrayList<Charakter>(); // Whoring is done separately
 				
 				for (Room room : house.getRooms()) {

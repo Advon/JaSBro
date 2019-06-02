@@ -146,11 +146,6 @@ public class RealEstateMenu extends JPanel {
 		setLayout(new FormLayout(new ColumnSpec[] {
 				ColumnSpec.decode("135dlu"),
 				ColumnSpec.decode("pref:grow"),
-				ColumnSpec.decode("pref:grow(10)"),
-				ColumnSpec.decode("pref:grow"),
-				ColumnSpec.decode("pref:grow(8)"),
-				ColumnSpec.decode("pref:grow"),
-				ColumnSpec.decode("pref:grow(8)"),
 				ColumnSpec.decode("pref:grow"),},
 				new RowSpec[] {
 				RowSpec.decode("20dlu"),
@@ -170,7 +165,7 @@ public class RealEstateMenu extends JPanel {
 			plotPanel.setBackground(GuiUtil.DEFAULTTRANSPARENTCOLOR);
 			plotPanel.setBorder(new LineBorder(new Color(139, 69, 19), 1, false));
 			plotPanel.setOpaque(true);
-			add(plotPanel, "7, 2, fill, fill");
+			add(plotPanel, "3, 2, fill, fill");
 
 			plotPanel.setLayout(new FormLayout(new ColumnSpec[]{
 						ColumnSpec.decode("1dlu:grow"),
@@ -219,7 +214,7 @@ public class RealEstateMenu extends JPanel {
 			sellHousePanel.setBackground(GuiUtil.DEFAULTTRANSPARENTCOLOR);
 			sellHousePanel.setBorder(new LineBorder(new Color(139, 69, 19), 1, false));
 			sellHousePanel.setOpaque(true);
-			add(sellHousePanel, "5, 2, fill, fill");
+			//add(sellHousePanel, "5, 2, fill, fill");
 			sellHousePanel.setLayout(new FormLayout(new ColumnSpec[] {
 					ColumnSpec.decode("1dlu:grow"),},
 					new RowSpec[] {
@@ -255,7 +250,7 @@ public class RealEstateMenu extends JPanel {
 			buildHousePanel.setBackground(GuiUtil.DEFAULTTRANSPARENTCOLOR);
 			buildHousePanel.setBorder(new LineBorder(new Color(139, 69, 19), 1, false));
 			buildHousePanel.setOpaque(true);
-			add(buildHousePanel, "3, 2, fill, fill");
+			//add(buildHousePanel, "3, 2, fill, fill");
 			buildHousePanel.setLayout(new FormLayout(new ColumnSpec[] {
 					ColumnSpec.decode("1dlu:grow"),},
 					new RowSpec[] {

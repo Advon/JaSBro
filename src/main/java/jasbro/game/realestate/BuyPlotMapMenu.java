@@ -60,31 +60,6 @@ public class BuyPlotMapMenu extends MyImage {
 		        }
 		    }		
 		});
-		
-		ImageIcon backIcon1 = new ImageIcon("images/buttons/back.png");
-		Image backImage1 = backIcon1.getImage().getScaledInstance( backHomeBtnWidth, backHomeBtnHeight,  java.awt.Image.SCALE_SMOOTH ) ;  
-		backIcon1 = new ImageIcon(backImage1);
-		
-		ImageIcon backIcon2 = new ImageIcon("images/buttons/back hover.png");
-		Image backImage2 = backIcon2.getImage().getScaledInstance( backHomeBtnWidth, backHomeBtnHeight,  java.awt.Image.SCALE_SMOOTH ) ;  
-		backIcon2 = new ImageIcon(backImage2);
-		
-		JButton backButton = new JButton(backIcon1);
-		backButton.setRolloverIcon(backIcon2);
-		backButton.setPressedIcon(backIcon1);
-		backButton.setBounds((int) (15*width/1280),(int) (620*height/720), backHomeBtnWidth, backHomeBtnHeight);
-		backButton.setBorderPainted(false); 
-		backButton.setContentAreaFilled(false); 
-		backButton.setFocusPainted(false); 
-		backButton.setOpaque(false);
-		add(backButton);
-		
-		backButton.addActionListener(new  ActionListener() {			
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				Jasbro.getInstance().getGui().showRealEstate();
-			}
-		});
 
 		Image plotImage1 = plotIcon1.getImage().getScaledInstance( iconSize, iconSize,  java.awt.Image.SCALE_SMOOTH );
 		plotIcon1 = new ImageIcon(plotImage1);
@@ -156,6 +131,31 @@ public class BuyPlotMapMenu extends MyImage {
 
 			buildMapChangeButtons();
 		}
+
+		ImageIcon backIcon1 = new ImageIcon("images/buttons/back.png");
+		Image backImage1 = backIcon1.getImage().getScaledInstance( backHomeBtnWidth, backHomeBtnHeight,  java.awt.Image.SCALE_SMOOTH ) ;
+		backIcon1 = new ImageIcon(backImage1);
+
+		ImageIcon backIcon2 = new ImageIcon("images/buttons/back hover.png");
+		Image backImage2 = backIcon2.getImage().getScaledInstance( backHomeBtnWidth, backHomeBtnHeight,  java.awt.Image.SCALE_SMOOTH ) ;
+		backIcon2 = new ImageIcon(backImage2);
+
+		JButton backButton = new JButton(backIcon1);
+		backButton.setRolloverIcon(backIcon2);
+		backButton.setPressedIcon(backIcon1);
+		backButton.setBounds((int) (15*width/1280),(int) (620*height/720), backHomeBtnWidth, backHomeBtnHeight);
+		backButton.setBorderPainted(false);
+		backButton.setContentAreaFilled(false);
+		backButton.setFocusPainted(false);
+		backButton.setOpaque(false);
+		add(backButton);
+
+		backButton.addActionListener(new  ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				Jasbro.getInstance().getGui().showRealEstate();
+			}
+		});
 
 		validate();
 		repaint();
