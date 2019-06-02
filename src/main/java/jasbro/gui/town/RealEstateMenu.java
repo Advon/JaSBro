@@ -452,14 +452,7 @@ public class RealEstateMenu extends JPanel {
 			plotDetailsPanel.add(buyHouseButton, "1,5,fill,top");
 			plotDetailsPanel.add(demoHouseButton, "1,7,fill,top");
 
-			int houseCount = 0;
-			for (Plot p: Jasbro.getInstance().getData().getRealEstateSystem().getOwnedPlots()) {
-				if (p.getHouse() != null) {
-					houseCount++;
-				}
-			}
-
-			if (houseCount < 2) {
+			if (Jasbro.getInstance().getData().getHouses().size() < 2) {
 				demoHouseButton.setEnabled(false);
 			}
 

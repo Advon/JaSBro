@@ -310,10 +310,8 @@ public class Jasbro {
 		data.getCharacters().add(slave);
 		slave.setOwnership(Ownership.OWNED);
 		slave.getAttribute(EssentialAttributes.MOTIVATION).setInternValue(65);
-		
-		House house = HouseUtil.newHouse(HouseType.HUT);
-		getData().getHouses().add(house);
-		
+
+		getData().getRealEstateSystem().init();
 		getData().getUnlocks().init(); //perform unlock init
 		
 		gui.showHouseManagementScreen();

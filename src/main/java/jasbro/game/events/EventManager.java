@@ -109,10 +109,7 @@ public class EventManager implements MyEventListener, Serializable {
 			}
 			
 			// Third handle the houses
-			for (Plot plot : gameData.getRealEstateSystem().getOwnedPlots()) {
-				House house = plot.getHouse();
-				if (house == null) continue;
-
+			for (House house : gameData.getHouses()) {
 				List<Charakter> whoresAndSupports = new ArrayList<Charakter>(); // Whoring is done separately
 				
 				for (Room room : house.getRooms()) {

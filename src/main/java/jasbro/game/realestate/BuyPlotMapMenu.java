@@ -20,6 +20,7 @@ import jasbro.gui.pictures.ImageData;
 import jasbro.texts.TextUtil;
 import jasbro.util.ConfigHandler;
 import jasbro.util.Settings;
+import jdk.nashorn.internal.scripts.JO;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -221,7 +222,7 @@ public class BuyPlotMapMenu extends MyImage {
 					}
 					else
 						LOG.info("Player too poor to afford plot. {} < {}", Jasbro.getInstance().getData().getMoney(), curPlot.getCost());
-				} else if (owned && JOptionPane.showConfirmDialog(Jasbro.getInstance().getGui(), TextUtil.t("ui.realestate.sellplot", curPlot.getCost()/2)) == JOptionPane.YES_OPTION) {
+				} else if (owned && JOptionPane.showConfirmDialog(Jasbro.getInstance().getGui(), TextUtil.t("ui.realestate.sellplot", curPlot.getCost()/2), TextUtil.t("ui.confirmResetPrks.title"), JOptionPane.OK_CANCEL_OPTION) == JOptionPane.YES_OPTION) {
 					gameData.getRealEstateSystem().sellPlot(plotID, gameData);
 					displayMap();
 				}

@@ -73,11 +73,10 @@ public class GameData implements Serializable {
 		inventory = new Inventory();
 		shop = new Shop();
 		realEstateSystem = new RealEstateSystem();
-		realEstateSystem.init();
 	}
 	
 	public List<House> getHouses() {
-		return houses;
+		return getPlotHouses();
 	}
 	
 	public void setHouses(List<House> houses) {
@@ -260,6 +259,15 @@ public class GameData implements Serializable {
 		if (realEstateSystem == null)
 			realEstateSystem = new RealEstateSystem();
 		return realEstateSystem;
+	}
+
+	private List<House> getPlotHouses() {
+		List<House> pHouses = new ArrayList<>();
+		for (Plot p: getRealEstateSystem().getOwnedPlots()) {
+			if (p.getHouse() != null) pHouses.add(p.getHouse());
+		}
+
+		return pHouses;
 	}
 
 	public void setRealEstateSystem(RealEstateSystem realEstateSystem) {
